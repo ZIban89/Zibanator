@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+    <user name="Василий Теркин">
+        <tikets>
+            <ticket>
+                <cinema></cinema>
+                <film></film>
+                <date></date>
+                <row></row>
+                <seat></seat>
+            </ticket>
+        </tikets>
+    </user>
+</users>
