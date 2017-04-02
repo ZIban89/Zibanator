@@ -1,6 +1,8 @@
 package Model;
 
 
+
+import java.util.Collections;
 import java.util.LinkedList;
 
 
@@ -26,4 +28,11 @@ public class Shows {
     public LinkedList<Show> getShows() {
         return shows;
     }
+
+    public void sort(){
+        Collections.sort(shows);
+
+    }
+
+
 }

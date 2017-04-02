@@ -38,8 +38,8 @@ public class TimetableEditor {
         return timetableEditor;
     }
 
-    public Map<String, Pair<Date, Date>> getFilms() throws ParseException {
-        Map<String, Pair<Date, Date>> filmsList = new HashMap<>();
+    public HashMap<String, Pair<Date, Date>> getFilms() throws ParseException {
+        HashMap<String, Pair<Date, Date>> filmsList = new HashMap<>();
         NodeList films = doc.getElementsByTagName("film");
         Element film;
         String filmName;
@@ -115,9 +115,9 @@ public class TimetableEditor {
         return rowB;
     }
 
-    public String bookTicket(User){
 
-    }
+
+
 
 
 
