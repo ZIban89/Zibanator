@@ -23,12 +23,13 @@ import java.io.IOException;
 public class SignInHandler {
     private static SignInHandler signInHandler;
     private Document doc;
+    private String fileName = "users.xml";
 
     private SignInHandler() throws ParserConfigurationException, IOException, SAXException {
         this.doc = doc;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        doc = db.parse(new File("users.xml"));
+        doc = db.parse(new File(fileName));
         doc.getDocumentElement();
     }
 
@@ -97,14 +98,7 @@ public class SignInHandler {
             user.appendChild(nameU);
             user.appendChild(passwordU);
             doc.getElementsByTagName("users").item(0).appendChild(user);
-            doc.getDocumentElement();
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("users.xml"));
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(source, result);
-            return true;
+            return XMLWriter.writeXML(doc, fileName);
         }catch(Exception e){return false;}
 
 

@@ -8,4 +8,16 @@
         <name>Василий Теркин</name>
         <password>PanzerTank</password>
     </user>
+    <user>
+        <name>test</name>
+        <password>test</password>
+    </user>
+    <user>
+        <name>test1</name>
+        <password>test</password>
+    </user>
+    <user>
+        <name>qwe</name>
+        <password>qwe</password>
+    </user>
 </users>

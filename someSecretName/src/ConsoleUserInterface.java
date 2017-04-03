@@ -12,20 +12,23 @@ import java.util.*;
  */
 public class ConsoleUserInterface {
     private Pair<Boolean, String> token = new Pair<>(false, "");
-    private TimetableWatcher TTW;
-    private SignInHandler SIH;
+    private String userName;
+    private TimetableWatcher tW;
+    private SignInHandler sH;
+    private BookingEditor bE;
     private PrintWriter out;
-    private String film;
+    private String filmName;
+    private Show requiredShow;
 
     public ConsoleUserInterface() {
         out = new PrintWriter(System.out);
         try {
-            TTW = TimetableWatcher.getTimetableWatcher();
-            SIH = SignInHandler.getSignInHandler();
+            tW = TimetableWatcher.getTimetableWatcher();
+            sH = SignInHandler.getSignInHandler();
+            bE = BookingEditor.getInstance();
         } catch (Exception e) {
             println("Работа в системе невозможна");
         }
-
     }
 
     private void printGreeting() {
@@ -34,18 +37,18 @@ public class ConsoleUserInterface {
     }
 
     private void readMessage() {
-        println("Введите команду");
+        println("Введите команду:");
         Scanner in = new Scanner(System.in);
         String message = in.nextLine();
         message=message.replaceAll("[ ]{2,}", " ");
         String[] words = message.split(" ");
         if (words.length == 0) {
-            println("Введите команду");
+            println("Введите команду:");
             readMessage();
         }
         switch (words[0]) {
             case ("films"): {
-                film = null;
+                filmName = null;
                 getFilms();
                 readMessage();
                 break;
@@ -53,7 +56,7 @@ public class ConsoleUserInterface {
             case ("signin"): {
                 if (token.getKey())
                     println("Вы уже вошли в систему. Для выхода введите signout");
-                if (words.length < 3) println("Введены некорректные данные");
+                if (words.length < 3) printIncorrectData();
                 else signin(words);
                 readMessage();
                 break;
@@ -68,12 +71,13 @@ public class ConsoleUserInterface {
             }
             case ("signout"): {
                 token = new Pair<>(false, "");
+                userName = null;
                 readMessage();
                 break;
             }
             case ("film"): {
                 if (words.length < 2)
-                    println("Введены некорректные данные");
+                    printIncorrectData();
                 else
                     getFilm(words);
                 readMessage();
@@ -81,31 +85,58 @@ public class ConsoleUserInterface {
             }
             case ("show"): {
                 if (words.length < 4)
-                    println("Введены некорректные данные");
+                    printIncorrectData();
                 else
                     getShow(words);
                 readMessage();
                 break;
             }
-        }
+            case ("booking"): {
+                if (token.getKey()) {
+                    if (tW.bookingSeats(filmName, requiredShow, Arrays.copyOfRange(words, 1, words.length)))
+                        if (bE.addTickets(userName, requiredShow, filmName, Arrays.copyOfRange(words, 1, words.length)))
+                            println("Билеты успешно забронированы.");
+                        else
+                            println("Что-то пошло не так. Билеты не были добавлены в Ваш профиль.");
+                    else
+                        println("Что-то пошло не так. Билеты не были забронированы. Возможно место уже забронировано.");
+                } else println("Для бронирования билетов необходимо войти в систему.");
+                readMessage();
+                break;
+            }
 
+            default: {
+                printIncorrectData();
+                readMessage();
+            }
+        }
     }
 
 
 
     private void getShow(String[] words) {
         try {
-            LinkedList<Show> shows = TTW.getFilm(film,true).getShows();
+            LinkedList<Show> shows = tW.getFilm(filmName, true).getShows();
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm");
             Date date=formatter.parse(words[words.length-2] + " " + words[words.length-1]);
-            StringBuilder cinemaName = new StringBuilder();
-            for(int i=1;i<words.length-2;i++)
-                cinemaName.append(words[i]+" ");
-            cinemaName.deleteCharAt(cinemaName.length()-1);
-
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < words.length - 2; i++) {
+                sb.append(words[i]);
+                sb.append(" ");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            String cinemaName = sb.toString();
             for (Show s : shows)
-                if (cinemaName.toString().equals(s.getCinemaName()) && date.compareTo(s.getDate()) == 0) {
-                    System.out.println("asdfasdfasdf");
+                if (cinemaName.equals(s.getCinemaName()) && date.compareTo(s.getDate()) == 0) {
+                    requiredShow = s;
+                    println("Инофрмация о фильме " + filmName + " в кинотеатре " + cinemaName + " " + words[words.length - 2] + " в " + words[words.length - 1] + ":");
+                    for (int i = 1; i < s.getSeats().length; i++) {
+                        print("Ряд " + i + "   ");
+                        for (int j = 0; j < s.getSeats()[i].length; j++)
+                            print(s.getSeats()[i][j] + " ");
+                        println("");
+                    }
+                    println("0 означает, что место уже забронировано.\nДля бронирования мест введите booking n1,m1 n2,m2...\nгде n- номер ряда, m- номер места.");
                 }
 
 
@@ -116,15 +147,17 @@ public class ConsoleUserInterface {
 
     private void getFilm(String[] words) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < words.length; i++)
-            sb.append(words[i] + " ");
+        for (int i = 1; i < words.length; i++) {
+            sb.append(words[i]);
+            sb.append(" ");
+        }
         sb.deleteCharAt(sb.length() - 1);
         Shows shows;
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yy HH:mm");
         try {
-            shows = TTW.getFilm(sb.toString(),false);
-            film = shows.getFilmName();
-            println("Фильм " + film + " показывают:");
+            shows = tW.getFilm(sb.toString(), false);
+            filmName = shows.getFilmName();
+            println("Фильм " + filmName + " показывают:");
             for (Show s : shows.getShows()) {
                 println(s.getCinemaName() + "   " + formatter.format(s.getDate()));
             }
@@ -148,19 +181,24 @@ public class ConsoleUserInterface {
     private void signin(String[] words) {
         String password = words[words.length - 1];
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < words.length - 1; i++)
-            sb.append(words[i] + " ");
+        for (int i = 1; i < words.length - 1; i++) {
+            sb.append(words[i]);
+            sb.append(" ");
+        }
         sb.deleteCharAt(sb.length() - 1);
         String name = sb.toString();
-        token = SIH.signIn(name, password);
-        if (token.getKey()) println("Вход в систему выполнен успешно.");
+        token = sH.signIn(name, password);
+        if (token.getKey()) {
+            println("Вход в систему выполнен успешно.");
+            userName = name;
+        }
         else println("Не удалось выполнить вход. Проверьте имя и пароль.");
     }
 
     private void getFilms() {
         HashMap<String, Pair<Date, Date>> map = null;
         try {
-            map = TTW.getFilms();
+            map = tW.getFilms();
         } catch (ParseException e) {
             println("Не удалось получить список файлов");
         }
@@ -179,9 +217,13 @@ public class ConsoleUserInterface {
             sb.append(words[i] + " ");
         sb.deleteCharAt(sb.length() - 1);
         String name = sb.toString();
-        boolean isSuccessful = SIH.signUp(name, password);
+        boolean isSuccessful = sH.signUp(name, password);
         if (isSuccessful) println("Новый пользователь зарегистрирован.");
         else println("Не удалось создать нового пользователя. Возможно пользователь с таким именем уже существует.");
+    }
+
+    private void printIncorrectData() {
+        println("Введены некорректные данные. Повторите ввод.");
     }
 
     public static void main(String[] args) {

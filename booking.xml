@@ -1,14 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <users>
     <user name="Василий Теркин">
-        <tikets>
-            <ticket>
-                <cinema></cinema>
-                <film></film>
-                <date></date>
-                <row></row>
-                <seat></seat>
-            </ticket>
+        <tikets cinema="" date="" film="">
+
+
         </tikets>
     </user>
+
+    <user name="qwe">
+        <tickets cinema="Kiev" date="05.04.2017 09:20" film="Robocop">1,1</tickets>
+        <tickets cinema="Avrora" date="07.04.2017 16:50" film="Avatar">1,1 1,2</tickets>
+        <tickets cinema="Kiev" date="05.04.2017 16:40" film="Robocop">2,1 2,3</tickets>
+        <tickets cinema="Belarus" date="05.04.2017 09:50" film="Godfather">2,3 2,4 2,5 2,6 1,1 1,2 1,3</tickets>
+    </user>
+
 </users>
