@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -18,9 +19,9 @@ import java.util.*;
 /**
  * Created by ZitZ on 01.04.2017.
  *
+ * Класс TimetableWatcher является синглотоном.
  * Объект класса используется для чтения расписания фильмов, чтения данных о наличиии мест, редактирования данных о наличии мест при бронировании места или отказа от брони.
  * Чтение/запись производится из/в файла timeTable.xml
- * Информация о методах указана в отдельных комментариях.
  */
 
 public class TimetableWatcher {
@@ -36,6 +37,14 @@ public class TimetableWatcher {
         doc.getDocumentElement();
 
     }
+
+    /**
+     *
+     * @return Экземпляр TimetableWatcher
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
     public static TimetableWatcher getTimetableWatcher() throws IOException, SAXException, ParserConfigurationException {
         if (timetableWatcher == null)
             timetableWatcher = new TimetableWatcher();
