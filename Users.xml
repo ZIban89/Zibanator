@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Файл для хранения данных о пользователях.
+Пользователи хранятся в формате:
+<user> <name>Имя пользователя</name> <password>Пароль пользователя</password> </user>
+-->
 <users>
     <user>
         <name>Василий Теркин</name>
