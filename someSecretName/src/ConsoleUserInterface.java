@@ -100,7 +100,17 @@ public class ConsoleUserInterface {
                             println("Что-то пошло не так. Билеты не были добавлены в Ваш профиль.");
                     else
                         println("Что-то пошло не так. Билеты не были забронированы. Возможно место уже забронировано.");
-                } else println("Для бронирования билетов необходимо войти в систему.");
+                } else println("Для бронирования мест необходимо войти в систему.");
+                readMessage();
+                break;
+            }
+            case ("tickets"): {
+                if (token.getKey()) {
+                    println("Ваша бронь:");
+                    for (String s : bE.watchTickets(userName))
+                        println(s);
+                    println("Для отмены брони введите remove имя кинотеатра название фильма дата номер места");
+                } else println("Для просмотра брони необходимо войти в систему.");
                 readMessage();
                 break;
             }

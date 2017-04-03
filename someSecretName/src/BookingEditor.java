@@ -50,7 +50,6 @@ public class BookingEditor {
                     doc.getElementsByTagName("users").item(0).appendChild(user);
                 }
             }
-
             NodeList tickets = ((Element) user).getElementsByTagName("tickets");
             Element ticket = null;
             if (tickets.getLength() > 0)
@@ -68,7 +67,6 @@ public class BookingEditor {
                         ticket.setTextContent(sb.toString());
                     }
                 }
-
             if (ticket == null) {
                 Element addedTickets = doc.createElement("tickets");
                 addedTickets.setAttribute("cinema", show.getCinemaName());
@@ -87,6 +85,26 @@ public class BookingEditor {
             return false;
         }
         return true;
+    }
+
+    String[] watchTickets(String userName) {
+        NodeList users = doc.getElementsByTagName("user");
+        String[] userTickets = null;
+        for (int i = 0; i < users.getLength(); i++) {
+            Element user = (Element) users.item(i);
+            if (user.getAttribute("name").equals(userName)) {
+                NodeList tickets = user.getElementsByTagName("tickets");
+                userTickets = new String[tickets.getLength()];
+                for (int t = 0; t < tickets.getLength(); t++) {
+                    StringBuilder sb = new StringBuilder("");
+                    Element ticket = (Element) tickets.item(t);
+                    sb.append("Фильм ").append(ticket.getAttribute("film")).append(" в кинотеатре ").append(ticket.getAttribute("cinema")).
+                            append(" состоится ").append(ticket.getAttribute("date")).append(". Забронированные Вами места(ряд,место): ").append(ticket.getTextContent());
+                    userTickets[t] = sb.toString();
+                }
+            }
+        }
+        return userTickets;
     }
 
 
