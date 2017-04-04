@@ -1,5 +1,6 @@
 import Model.Show;
 import Model.Shows;
+import Model.Tickets;
 import javafx.util.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,8 +11,10 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -246,6 +249,54 @@ class TimetableWatcher {
             }
 
         return wantedShow;
+    }
+
+    boolean removeTickets(Tickets tickets, String[] removedSeats) throws ParseException, TransformerException, FileNotFoundException {
+        NodeList cinemas = doc.getElementsByTagName("cinema");
+        for (int i = 0; i < cinemas.getLength(); i++) {
+            Element cinema = (Element) cinemas.item(i);
+            if (cinema.getAttribute("name").equals(tickets.getCinemaName())) {
+                NodeList films = cinema.getElementsByTagName("film");
+                for (int j = 0; j < films.getLength(); j++) {
+                    Element film = (Element) films.item(j);
+                    if (film.getAttribute("name").equals(tickets.getFilmName())) {
+                        NodeList shows = film.getElementsByTagName("show");
+                        for (int k = 0; k < shows.getLength(); k++) {
+                            Element show = (Element) shows.item(k);
+                            if (new SimpleDateFormat("dd.MM.yyyy HH:mm").parse(show.getAttribute("date")).equals(tickets.getDate())) {
+                                NodeList rows = show.getElementsByTagName("row");
+                                byte[][] seats = new byte[rows.getLength()][];
+                                for (int h = 0; h < seats.length; h++) {
+                                    seats[h] = fillRow(rows.item(h).getTextContent());
+                                }
+                                for (String s : removedSeats) {
+                                    String[] seat = s.split(",");
+                                    byte rowN = Byte.parseByte(seat[0]);
+                                    byte seatN = (byte) Arrays.binarySearch(seats[0], Byte.parseByte(seat[1]));
+                                    seats[rowN][seatN] = (byte) (seatN + 1);
+                                }
+                                for (int h = 0; h < seats.length; h++) {
+                                    StringBuilder sb = new StringBuilder("");
+                                    for (byte b : seats[h]) {
+
+                                        sb.append(b);
+                                        sb.append(" ");
+                                    }
+                                    sb.deleteCharAt(sb.length() - 1);
+                                    rows.item(h).setTextContent(sb.toString());
+
+                                }
+
+                                XMLWriter.writeXML(doc, fileName);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return false;
     }
 
 

@@ -1,5 +1,7 @@
 import Model.Show;
 import Model.Shows;
+import Model.Tickets;
+import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.util.Pair;
 
 import java.io.PrintWriter;
@@ -19,6 +21,7 @@ public class ConsoleUserInterface {
     private PrintWriter out;
     private String filmName;
     private Show requiredShow;
+    private Tickets[] tickets;
 
     public ConsoleUserInterface() {
         out = new PrintWriter(System.out);
@@ -58,6 +61,9 @@ public class ConsoleUserInterface {
                     println("Вы уже вошли в систему. Для выхода введите signout");
                 if (words.length < 3) printIncorrectData();
                 else signin(words);
+                if (token.getKey()) {
+                    println("");
+                }
                 readMessage();
                 break;
             }
@@ -106,13 +112,38 @@ public class ConsoleUserInterface {
             }
             case ("tickets"): {
                 if (token.getKey()) {
+                    initTickets(userName);
                     println("Ваша бронь:");
-                    for (String s : bE.watchTickets(userName))
-                        println(s);
-                    println("Для отмены брони введите remove имя кинотеатра название фильма дата номер места");
+                    int n = 0;
+                    for (Tickets s : tickets) {
+                        n++;
+                        StringBuilder sb = new StringBuilder("").append(n).append(") ").append("Показ фильма ").append(s.getFilmName()).append(" пройдёт ").
+                                append(new SimpleDateFormat("dd.MM.yy HH:mm").format(s.getDate())).append(" в кинотеатре ").append(s.getCinemaName()).
+                                append(". Забронированные Вами места(ряд,место):");
+                        for (String seat : s.getSeats()) {
+                            sb.append(" ");
+                            sb.append(seat);
+                        }
+                        println(sb.toString());
+                    }
+
+                    println("Для отмены брони введите remove номер показа места(ряд,место) через пробел");
                 } else println("Для просмотра брони необходимо войти в систему.");
                 readMessage();
                 break;
+            }
+
+            case ("remove"): {
+                if (tickets != null)
+                    try {
+                        if (bE.removeTicket(userName, tickets[Integer.parseInt(words[1]) - 1], Arrays.copyOfRange(words, 2, words.length)))
+                            tW.removeTickets(tickets[Integer.parseInt(words[1]) - 1], Arrays.copyOfRange(words, 2, words.length));
+                        else println("Вы не бронировали данные места.");
+
+                    } catch (Exception e) {
+                    }
+                else
+                    println("Сначала необходимо войти в систему и получить список забронированных Вами мест");
             }
 
             default: {
@@ -123,6 +154,9 @@ public class ConsoleUserInterface {
     }
 
 
+    private void initTickets(String userName) {
+        tickets = bE.watchTickets(userName);
+    }
 
     private void getShow(String[] words) {
         try {
@@ -199,7 +233,9 @@ public class ConsoleUserInterface {
         String name = sb.toString();
         token = sH.signIn(name, password);
         if (token.getKey()) {
-            println("Вход в систему выполнен успешно.");
+            println("Вход в систему выполнен успешно.\nДля выхода из Вашего аккаунта введите signout\n" +
+                    "Для получения списка забронированных Вами мест введите tickets");
+
             userName = name;
         }
         else println("Не удалось выполнить вход. Проверьте имя и пароль.");
