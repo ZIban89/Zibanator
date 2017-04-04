@@ -79,6 +79,7 @@ public class ConsoleUserInterface {
             case ("signout"): {
                 token = new Pair<>(false, "");
                 userName = null;
+                println("Вы вышли из своей учетной записи.");
                 readMessage();
                 break;
             }
@@ -116,20 +117,23 @@ public class ConsoleUserInterface {
                     initTickets(userName);
                     println("Ваша бронь:");
                     int n = 0;
-                    for (Tickets s : tickets) {
-                        n++;
-                        StringBuilder sb = new StringBuilder("").append(n).append(") ").append("Показ фильма ").append(s.getFilmName()).append(" пройдёт ").
-                                append(new SimpleDateFormat("dd.MM.yy HH:mm").format(s.getDate())).append(" в кинотеатре ").append(s.getCinemaName()).
-                                append(". Забронированные Вами места(ряд,место):");
-                        for (String seat : s.getSeats()) {
-                            sb.append(" ");
-                            sb.append(seat);
+                    if (tickets.length > 0) {
+                        for (Tickets s : tickets) {
+                            n++;
+                            StringBuilder sb = new StringBuilder("").append(n).append(") ").append("Показ фильма ").append(s.getFilmName()).append(" пройдёт ").
+                                    append(new SimpleDateFormat("dd.MM.yy HH:mm").format(s.getDate())).append(" в кинотеатре ").append(s.getCinemaName()).
+                                    append(". Забронированные Вами места(ряд,место):");
+                            for (String seat : s.getSeats()) {
+                                sb.append(" ");
+                                sb.append(seat);
+                            }
+                            println(sb.toString());
                         }
-                        println(sb.toString());
-                    }
 
-                    println("Для отмены брони введите remove номер показа места(ряд,место) через пробел");
+                        println("Для отмены брони введите remove номер показа места(ряд,место) через пробел");
+                    } else println("На данный момент у Вас нет забронированных мест.");
                 } else println("Для просмотра брони необходимо войти в систему.");
+
                 readMessage();
                 break;
             }
@@ -144,6 +148,7 @@ public class ConsoleUserInterface {
                         else println("Вы не бронировали данные места.");
 
                     } catch (Exception e) {
+
                     }
                 else
                     println("Сначала необходимо войти в систему и получить список забронированных Вами мест");

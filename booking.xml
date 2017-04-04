@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <users>
 
-    <user name="qwe">
-        <tickets cinema="Belarus" date="05.04.2017 16:50" film="Avatar">2,1 2,2</tickets>
-    </user>
+
     <user name="Nikonov Sergey">
-        <tickets cinema="Kiev" date="04.04.2017 16:40" film="Robocop">3,6</tickets>
+
+        <tickets cinema="Kiev" date="05.04.2017 09:20" film="Robocop">2,2 2,3</tickets>
     </user>
 </users>

@@ -181,8 +181,12 @@ public class BookingEditor {
                                 sb.append(s);
                                 sb.append(" ");
                             }
-                            sb.deleteCharAt(sb.length() - 1);
-                            ticket.setTextContent(sb.toString());
+                            if (sb.length() > 0) {
+                                sb.deleteCharAt(sb.length() - 1);
+                                ticket.setTextContent(sb.toString());
+
+                            } else
+                                user.removeChild(ticket);
                             XMLWriter.writeXML(doc, fileName);
                             return true;
                         }
