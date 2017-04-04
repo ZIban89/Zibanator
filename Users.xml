@@ -13,4 +13,8 @@
         <name>qwerty</name>
         <password>qwerty</password>
     </user>
+    <user>
+        <name>Nikonov Sergey</name>
+        <password>123</password>
+    </user>
 </users>

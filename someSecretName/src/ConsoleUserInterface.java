@@ -1,7 +1,7 @@
 import Model.Show;
 import Model.Shows;
 import Model.Tickets;
-import com.sun.org.apache.xpath.internal.SourceTree;
+
 import javafx.util.Pair;
 
 import java.io.PrintWriter;
@@ -36,7 +36,8 @@ public class ConsoleUserInterface {
 
     private void printGreeting() {
         println("Здравствуйте!\nДля просмотра фильмов, идущих в кино, введите films.\nДля бронирования мест необходимо войти в систему.\nДля " +
-                "входа введите signin name password,\nдля регистрации нового пользователя введите signup name password,\nгде name- Ваше имя в системе, password- Ваш пароль в системе.");
+                "входа введите signin name password,\nдля регистрации нового пользователя введите signup name password,\nгде name- Ваше имя в системе, password- Ваш пароль в системе.\n" +
+                "Для завершениея работы в системе введите exit");
     }
 
     private void readMessage() {
@@ -137,14 +138,20 @@ public class ConsoleUserInterface {
                 if (tickets != null)
                     try {
                         if (bE.removeTicket(userName, tickets[Integer.parseInt(words[1]) - 1], Arrays.copyOfRange(words, 2, words.length)))
-                            tW.removeTickets(tickets[Integer.parseInt(words[1]) - 1], Arrays.copyOfRange(words, 2, words.length));
+                            if (tW.removeTickets(tickets[Integer.parseInt(words[1]) - 1], Arrays.copyOfRange(words, 2, words.length)))
+                                println("Бронь успешно отменена.");
+
                         else println("Вы не бронировали данные места.");
 
                     } catch (Exception e) {
                     }
                 else
                     println("Сначала необходимо войти в систему и получить список забронированных Вами мест");
+                readMessage();
+                break;
             }
+            case ("exit"):
+                System.exit(0);
 
             default: {
                 printIncorrectData();

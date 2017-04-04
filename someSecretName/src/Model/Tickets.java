@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by ZitZ on 04.04.2017.
+ * Класс для хранения данных о брони отдельно взятого кинопоказа.
  */
 public class Tickets {
 
@@ -13,6 +14,12 @@ public class Tickets {
     private Date date;
     private String[] seats;
 
+    /**
+     * @param cinemaName Название кинотеатра
+     * @param filmName   Название фильма
+     * @param date       Дата показа
+     * @param seats      Места, хранятся в формате r,s где r-ряд, s- место
+     */
     public Tickets(String cinemaName, String filmName, Date date, String[] seats) {
         this.cinemaName = cinemaName;
         this.filmName = filmName;

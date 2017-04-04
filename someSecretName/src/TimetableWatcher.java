@@ -173,6 +173,14 @@ class TimetableWatcher {
         return rowB;
     }
 
+    /**
+     * Методя для бронирования мест, отмечает бронируемые места нулями в файле booking.xml
+     *
+     * @param filmName     Название фильма
+     * @param requiredShow Требуемый кинопоказ
+     * @param bookingSeats Бронируемые места
+     * @return Будевское значение, true, если бронирование удалось, false, если нет
+     */
     boolean bookingSeats(String filmName, Show requiredShow, String[] bookingSeats) {
         try {
             Element wantedShow = findWantedShow(filmName, requiredShow);
@@ -218,6 +226,13 @@ class TimetableWatcher {
 
     }
 
+    /**
+     * Вспомогательный метод для метода bookingSeats().
+     * @param filmName Название фильма
+     * @param requiredShow Требуемый кинопоказ
+     * @return Элемент документа, отвечающий запросам входных данных
+     * @throws ParseException
+     */
     private Element findWantedShow(String filmName, Show requiredShow) throws ParseException {
         Element wantedShow = null;
         NodeList cinemas = doc.getElementsByTagName("cinema");
@@ -251,6 +266,15 @@ class TimetableWatcher {
         return wantedShow;
     }
 
+    /**
+     * Метод для отмены брони, отмечает места, с которых снимается бронь, своими номерами(вместо нулей)
+     * @param tickets Информация о брони
+     * @param removedSeats Места, с которых снимается бронь, хранятся в формате r,s где r-ряд, s- место
+     * @return Булевское значение, true, если отмена брони прошла успешно, false, если нет
+     * @throws ParseException
+     * @throws TransformerException
+     * @throws FileNotFoundException
+     */
     boolean removeTickets(Tickets tickets, String[] removedSeats) throws ParseException, TransformerException, FileNotFoundException {
         NodeList cinemas = doc.getElementsByTagName("cinema");
         for (int i = 0; i < cinemas.getLength(); i++) {
@@ -288,6 +312,7 @@ class TimetableWatcher {
                                 }
 
                                 XMLWriter.writeXML(doc, fileName);
+                                return true;
                             }
                         }
                     }

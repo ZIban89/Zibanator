@@ -4,4 +4,7 @@
     <user name="qwe">
         <tickets cinema="Belarus" date="05.04.2017 16:50" film="Avatar">2,1 2,2</tickets>
     </user>
+    <user name="Nikonov Sergey">
+        <tickets cinema="Kiev" date="04.04.2017 16:40" film="Robocop">3,6</tickets>
+    </user>
 </users>

@@ -41,6 +41,15 @@ public class BookingEditor {
         return instance;
     }
 
+    /**
+     * Метод для бронирования мест, добавляет бронируемые места в профиль пользователя(записывает данные в файл booking.xml.
+     *
+     * @param userName Имя пользователя
+     * @param show     Требуемый показ
+     * @param filmName Название фильма
+     * @param seats    Бронируемые места, хранятся в формате r,s где r-ряд, s- место
+     * @return Булевское значение, true, если запись удалась, false- если нет.
+     */
     boolean addTickets(String userName, Show show, String filmName, String[] seats) {
         try {
             NodeList users = doc.getElementsByTagName("user");
@@ -97,6 +106,12 @@ public class BookingEditor {
         return true;
     }
 
+    /**
+     * Метод для просмотра забронированных мест пользователя
+     *
+     * @param userName Имя пользователя.
+     * @return Массив объектов Tickets- информации о брони пользователя на отдельный кинопоказ.
+     */
     Tickets[] watchTickets(String userName) {
         NodeList users = doc.getElementsByTagName("user");
         Tickets[] userTickets = null;
@@ -125,6 +140,16 @@ public class BookingEditor {
         return userTickets;
     }
 
+    /**
+     * Метод для отмены брони, удаляет из файла booking.xml забронированные места на отдельный кинопоказ
+     * @param userName Имя пользователя
+     * @param tickets Иформация о брони
+     * @param seats Места, бронь которых отменяет пользователь
+     * @return Булевское значение, true, если отмена брони удалась, false, усли нет.
+     * @throws ParseException
+     * @throws TransformerException
+     * @throws FileNotFoundException
+     */
     boolean removeTicket(String userName, Tickets tickets, String[] seats) throws ParseException, TransformerException, FileNotFoundException {
 
         NodeList users = doc.getElementsByTagName("user");
